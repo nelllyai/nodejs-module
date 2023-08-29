@@ -4,7 +4,7 @@
   "description": "template node js project",
   "main": "index.js",
   "scripts": {
-    "start": "node task01 && node task02",
+    "start": "node task01 && node task02 && node task03",
     "dev": "nodemon index",
     "lint": "eslint . --fix"
   },
@@ -21,5 +21,8 @@
     "eslint-plugin-prettier": "^5.0.0",
     "nodemon": "^3.0.1",
     "prettier": "3.0.1"
+  },
+  "dependencies": {
+    "sharp": "^0.32.5"
   }
 }
