@@ -23,6 +23,7 @@ class Tasks {
     };
 
     appendTasksFile(newItem);
+    return newItem.id;
   }
 
   // получение форматированной строки с информацией о задаче

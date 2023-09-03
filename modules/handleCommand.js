@@ -13,7 +13,8 @@ export const handleCommand = ([, , ...argv]) => {
 
   // добавление задачи
   if (argv[0] === 'add' && argv[1]) {
-    tasksList.add(argv[1]);
+    const newTaskId = tasksList.add(argv[1]);
+    getSuccessfulMessage(`Задача #${newTaskId} добавлена`);
     return;
   }
 
