@@ -4,7 +4,7 @@
   "description": "template node js project",
   "main": "index.js",
   "scripts": {
-    "start": "node cli",
+    "start": "node index",
     "dev": "nodemon index",
     "lint": "eslint . --fix"
   },
