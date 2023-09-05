@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { tasksList } from './tasks.js';
 
-export const handleCommand = ([, , ...argv]) => {
+export const handleCommand = async ([, , ...argv]) => {
   const reportNotFound = id => {
     console.log(chalk.red(`Задача #${id} не найдена!`));
   };
@@ -9,6 +9,14 @@ export const handleCommand = ([, , ...argv]) => {
   const getSuccessfulMessage = text => {
     console.log(chalk.green(text));
   };
+
+  if (argv.includes('-hd')) {
+    tasksList.homedir = true;
+    argv.splice(argv.indexOf('-hd'), 1);
+  }
+
+  // инициализация списка из файла
+  await tasksList.init();
 
   // добавление задачи
   if (argv[0] === 'add' && argv[1]) {
@@ -27,7 +35,7 @@ export const handleCommand = ([, , ...argv]) => {
   }
 
   // получение описания задачи по id
-  if (argv[0] === 'get' && argv[1] && !isNaN(argv[1])) {
+  if (argv[0] === 'get' && !isNaN(argv[1])) {
     try {
       getSuccessfulMessage(tasksList.getById(argv[1]));
     } catch {
@@ -37,7 +45,7 @@ export const handleCommand = ([, , ...argv]) => {
   }
 
   // обновление названия задачи по id
-  if (argv[0] === 'update' && argv[1] && !isNaN(argv[1]) && argv[2]) {
+  if (argv[0] === 'update' && !isNaN(argv[1]) && argv[2]) {
     try {
       tasksList.updateTitle(argv[1], argv[2]);
       getSuccessfulMessage(`Задача #${argv[1]} обновлена`);
@@ -48,7 +56,7 @@ export const handleCommand = ([, , ...argv]) => {
   }
 
   // обновление статуса задачи по id
-  if (argv[0] === 'status' && argv[1] && !isNaN(argv[1]) && argv[2]) {
+  if (argv[0] === 'status' && !isNaN(argv[1]) && argv[2]) {
     try {
       tasksList.updateStatus(argv[1], argv[2]);
       getSuccessfulMessage(`Статус задачи #${argv[1]} обновлен`);
@@ -59,7 +67,7 @@ export const handleCommand = ([, , ...argv]) => {
   }
 
   // удаление задачи по id
-  if (argv[0] === 'delete' && argv[1] && !isNaN(argv[1])) {
+  if (argv[0] === 'delete' && !isNaN(argv[1])) {
     try {
       tasksList.delete(argv[1]);
       getSuccessfulMessage(`Задача #${argv[1]} удалена`);

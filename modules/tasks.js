@@ -1,17 +1,24 @@
-import { getTasksFromFile, writeTasksIntoFile } from './fileUpdate.js';
+import { getTasksFromFile, saveTasksIntoFile } from './fileUpdate.js';
 
 class Tasks {
   constructor() {
     this._tasks = [];
+    this._homedir = false;
   }
 
   // запись задач из файла в массив
   async init() {
-    this._tasks = await getTasksFromFile();
+    this._tasks = await getTasksFromFile(this._homedir);
   }
 
+  // получение массива задач
   get list() {
     return this._tasks;
+  }
+
+  // задание флага обработки домашней директории
+  set homedir(value) {
+    this._homedir = value;
   }
 
   // добавление задачи и запись в файл
@@ -24,7 +31,7 @@ class Tasks {
 
     this._tasks.push(newItem);
 
-    writeTasksIntoFile(this._tasks);
+    saveTasksIntoFile(this._tasks, this._homedir);
     return newItem.id;
   }
 
@@ -46,7 +53,7 @@ class Tasks {
       title,
     };
 
-    writeTasksIntoFile(this._tasks);
+    saveTasksIntoFile(this._tasks, this._homedir);
   }
 
   // обновление статуса задачи по id и обновление файла
@@ -64,7 +71,7 @@ class Tasks {
       throw new Error();
     }
 
-    writeTasksIntoFile(this._tasks);
+    saveTasksIntoFile(this._tasks, this._homedir);
   }
 
   // удаление задачи по id и обновление файла
@@ -75,7 +82,7 @@ class Tasks {
       throw new Error();
     }
 
-    writeTasksIntoFile(this._tasks);
+    saveTasksIntoFile(this._tasks, this._homedir);
   }
 }
 
