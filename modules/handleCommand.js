@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import { readTasksFile } from './fileUpdate.js';
 import { tasksList } from './tasks.js';
 
 export const handleCommand = ([, , ...argv]) => {
@@ -21,7 +20,9 @@ export const handleCommand = ([, , ...argv]) => {
   // вывод списка из файла
   if (argv[0] === 'list') {
     console.log(chalk.bgGreen('Список задач:'));
-    console.log(readTasksFile());
+    tasksList.list.forEach((item, index) => {
+      console.log(`${index + 1}. [${item.status}] ${item.title}`);
+    });
     return;
   }
 
@@ -59,8 +60,12 @@ export const handleCommand = ([, , ...argv]) => {
 
   // удаление задачи по id
   if (argv[0] === 'delete' && argv[1] && !isNaN(argv[1])) {
-    tasksList.delete(argv[1]);
-    getSuccessfulMessage(`Задача #${argv[1]} удалена`);
+    try {
+      tasksList.delete(argv[1]);
+      getSuccessfulMessage(`Задача #${argv[1]} удалена`);
+    } catch {
+      reportNotFound(argv[1]);
+    }
     return;
   }
 

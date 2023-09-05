@@ -1,8 +1,4 @@
-import {
-  appendTasksFile,
-  getTasksArrayFromFile,
-  writeTasksFile,
-} from './fileUpdate.js';
+import { getTasksFromFile, writeTasksIntoFile } from './fileUpdate.js';
 
 class Tasks {
   constructor() {
@@ -11,7 +7,11 @@ class Tasks {
 
   // запись задач из файла в массив
   async init() {
-    this._tasks = await getTasksArrayFromFile();
+    this._tasks = await getTasksFromFile();
+  }
+
+  get list() {
+    return this._tasks;
   }
 
   // добавление задачи и запись в файл
@@ -22,7 +22,9 @@ class Tasks {
       status: 'В работе',
     };
 
-    appendTasksFile(newItem);
+    this._tasks.push(newItem);
+
+    writeTasksIntoFile(this._tasks);
     return newItem.id;
   }
 
@@ -34,7 +36,7 @@ class Tasks {
         Задача #${task.id}
         Название: ${task.title}
         Статус: ${task.status}
-      `;
+    `;
   }
 
   // обновление описания задачи по id и обновление файла
@@ -44,24 +46,36 @@ class Tasks {
       title,
     };
 
-    writeTasksFile(this._tasks);
+    writeTasksIntoFile(this._tasks);
   }
 
   // обновление статуса задачи по id и обновление файла
   updateStatus(id, status) {
-    this._tasks[+id - 1] = {
-      ...this._tasks[+id - 1],
-      status,
-    };
+    const taskIndexToEditStatus = this._tasks.findIndex(
+      task => task.id === +id,
+    );
 
-    writeTasksFile(this._tasks);
+    if (taskIndexToEditStatus !== -1) {
+      this._tasks[taskIndexToEditStatus] = {
+        ...this._tasks[taskIndexToEditStatus],
+        status,
+      };
+    } else {
+      throw new Error();
+    }
+
+    writeTasksIntoFile(this._tasks);
   }
 
   // удаление задачи по id и обновление файла
   delete(id) {
-    this._tasks = this._tasks.filter(task => task.id !== +id);
+    if (this._tasks.find(task => task.id === +id)) {
+      this._tasks = this._tasks.filter(task => task.id !== +id);
+    } else {
+      throw new Error();
+    }
 
-    writeTasksFile(this._tasks);
+    writeTasksIntoFile(this._tasks);
   }
 }
 
