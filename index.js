@@ -16,7 +16,7 @@ replaceTextInTxtFiles(topDir, stringToFind, stringToReplace)
   .then(countFiles => {
     console.log(
       chalk.bgGreen(
-        'Поиск и замена были произведены в ' + countFiles + ' файлах.',
+        'Поиск был произведен в ' + countFiles + ' текстовых файлах.',
       ),
     );
   })

@@ -4,7 +4,7 @@ import path from 'node:path';
 const replaceText = async (file, fromString, toString) => {
   const text = await fs.readFile(file, 'utf-8');
   const newText = text.replaceAll(fromString, toString);
-  return fs.writeFile(file, newText);
+  fs.writeFile(file, newText);
 };
 
 export const replaceTextInTxtFiles = (dir, fromString, toString) => {
