@@ -1,4 +1,9 @@
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+const filePath = path.join(os.homedir(), 'tasks.json');
+console.log(filePath);
 
 const FILE = './tasks.json';
 
