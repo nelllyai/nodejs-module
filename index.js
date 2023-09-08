@@ -1,26 +1,13 @@
-import readline from 'node:readline/promises';
-import process from 'node:process';
-import { replaceTextInTxtFiles } from './modules/replaceText.js';
-import chalk from 'chalk';
+import fetchData from './modules/fetchData.js';
+import parseHtml from './modules/parseHTML.js';
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+const app = async () => {
+  const result = await fetchData('http://www.lexxdomain.com/episodes.php');
+  console.log('HTML:');
+  console.log(result);
 
-const topDir = await rl.question('Введите путь к директории: ');
-const stringToFind = await rl.question('Введите строку для поиска: ');
-const stringToReplace = await rl.question('Введите строку для замены: ');
+  console.log();
+  parseHtml(result);
+};
 
-replaceTextInTxtFiles(topDir, stringToFind, stringToReplace)
-  .then(countFiles => {
-    console.log(
-      chalk.bgGreen(
-        'Поиск был произведен в ' + countFiles + ' текстовых файлах.',
-      ),
-    );
-  })
-  .catch(err => {
-    console.log(chalk.bgRed('Произошла ошибка. ' + err.message));
-  })
-  .finally(() => rl.close());
+app();
