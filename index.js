@@ -1,13 +1,18 @@
-import fetchData from './modules/fetchData.js';
-import parseHtml from './modules/parseHTML.js';
+#!/usr/bin/env node
+
+import chalk from 'chalk';
+import fetchNews from './modules/fetchNews.js';
+import parseArgs from './modules/parseArgs.js';
+import printNews from './modules/printNews.js';
 
 const app = async () => {
-  const result = await fetchData('http://www.lexxdomain.com/episodes.php');
-  console.log('HTML:');
-  console.log(result);
-
-  console.log();
-  parseHtml(result);
+  try {
+    const options = parseArgs(process.argv);
+    const news = await fetchNews(options);
+    printNews(news);
+  } catch (error) {
+    console.log(chalk.bgRed(error.message));
+  }
 };
 
 app();
