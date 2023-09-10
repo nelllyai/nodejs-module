@@ -1,10 +1,8 @@
 import https from 'node:https';
-// import url from 'node:url';
+import 'dotenv/config';
 
 const fetchNews = (options = {}) => {
-  const apiKey = '65f79928ed794be897e5e09178bdcf8d';
-
-  const newsUrl = new URL('https://newsapi.org/v2/top-headlines');
+  const newsUrl = new URL(process.env.NEWS_URL);
 
   if (options.q) {
     newsUrl.searchParams.append('q', options.q);
@@ -26,7 +24,7 @@ const fetchNews = (options = {}) => {
     newsUrl.searchParams.append('pageSize', 10);
   }
 
-  newsUrl.searchParams.append('apiKey', apiKey);
+  newsUrl.searchParams.append('apiKey', process.env.API_KEY);
 
   const requestOptions = {
     method: 'GET',
