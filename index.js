@@ -1,26 +1,25 @@
-#!/usr/bin/env node
-import fs from 'node:fs';
-import hash from './modules/hash.js';
-import compress from './modules/compress.js';
-import decompress from './modules/decompress.js';
-import chalk from 'chalk';
+import 'dotenv/config';
+import { readFile } from 'node:fs/promises';
+import { fetchAndStoreData, fetchValidTickers } from './modules/dataModule.js';
+import { startServer } from './modules/serverModule.js';
 
-const file = fs.readFileSync('test.jpeg');
-const fileHash = hash(file);
+const PORT = process.env.PORT || 3000;
+const TICKERS_FILE = process.env.TICKERS_FILE;
 
-fs.writeFileSync('test_jpeg.sha256', fileHash);
+try {
+  const validTickers = await fetchValidTickers();
 
-compress('test_jpeg.sha256', 'test_jpeg.gz', () => {
-  decompress('test_jpeg.gz', 'test_jpeg.jpeg', () => {
-    const decompressed = fs.readFileSync('test_jpeg.gz');
-    const decompressedHash = hash(decompressed);
+  const fileData = await readFile(TICKERS_FILE, 'utf-8');
+  const tickers = JSON.parse(fileData);
 
-    if (fileHash === decompressedHash) {
-      console.log(chalk.bgGreen('Хэши до сжатия и после распаковки совпадают'));
-    } else {
-      console.log(
-        chalk.bgRed('Хэши до сжатия и после распаковки НЕ совпадают'),
-      );
-    }
+  const server = startServer(tickers, validTickers);
+  server.listen(PORT, () => {
+    console.log('Сервер запущен на', PORT, 'порту');
   });
-});
+
+  setInterval(() => {
+    fetchAndStoreData(tickers);
+  }, 5000);
+} catch (error) {
+  console.error('Ошибка при чтении данных из файла:', error.message);
+}
